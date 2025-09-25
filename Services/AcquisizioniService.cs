@@ -1,0 +1,55 @@
+using Microsoft.EntityFrameworkCore;
+using SMARTMOB_PANTAREI_BACK.Data;
+using SMARTMOB_PANTAREI_BACK.DTOs;
+using SMARTMOB_PANTAREI_BACK.Models;
+
+namespace SMARTMOB_PANTAREI_BACK.Services
+{
+    public interface IAcquisizioniService
+    {
+        Task<IEnumerable<AcquisizioniDto>> GetAllAsync();
+        Task<AcquisizioniDto?> GetByIdAsync(int id);
+    }
+
+    public class AcquisizioniService : IAcquisizioniService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public AcquisizioniService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<AcquisizioniDto>> GetAllAsync()
+        {
+            var acquisizioni = await _context.Acquisizioni.ToListAsync();
+            return acquisizioni.Select(MapToDto);
+        }
+
+        public async Task<AcquisizioniDto?> GetByIdAsync(int id)
+        {
+            var acquisizione = await _context.Acquisizioni.FindAsync(id);
+            return acquisizione != null ? MapToDto(acquisizione) : null;
+        }
+
+        private static AcquisizioniDto MapToDto(Acquisizioni acquisizione)
+        {
+            return new AcquisizioniDto
+            {
+                Id = acquisizione.Id,
+                CodLinea = acquisizione.CodLinea,
+                CodPostazione = acquisizione.CodPostazione,
+                FotoAcquisizione = acquisizione.FotoAcquisizione,
+                CodiceArticolo = acquisizione.CodiceArticolo,
+                IdCatasta = acquisizione.IdCatasta,
+                AbilitaCq = acquisizione.AbilitaCq,
+                EsitoCqArticolo = acquisizione.EsitoCqArticolo,
+                NumSpineContate = acquisizione.NumSpineContate,
+                NumSpineAttese = acquisizione.NumSpineAttese,
+                DataInserimento = acquisizione.DataInserimento,
+                DataAggiornamento = acquisizione.DataAggiornamento,
+                Descrizione = acquisizione.Descrizione
+            };
+        }
+    }
+}

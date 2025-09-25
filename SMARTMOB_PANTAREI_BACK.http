@@ -1,0 +1,54 @@
+@SMARTMOB_PANTAREI_BACK_HostAddress = https://localhost:7025
+
+### Test Swagger UI
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/
+
+### ========== ACQUISIZIONI ENDPOINTS ==========
+
+### Get all acquisizioni
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/acquisizioni
+Accept: application/json
+
+### Get acquisizione by ID
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/acquisizioni/1
+Accept: application/json
+
+### ========== POSTAZIONI ENDPOINTS ==========
+
+### Get all postazioni
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni
+Accept: application/json
+
+### Get postazione by composite key
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/M001/P001
+Accept: application/json
+
+### Create new postazione
+POST {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni
+Content-Type: application/json
+
+{
+  "codLineaProd": "M001",
+  "codPostazione": "P003",
+  "flgRullieraBox": true
+}
+
+### Update postazione
+PUT {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/M001/P003
+Content-Type: application/json
+
+{
+  "flgRullieraBox": false
+}
+
+### Delete postazione
+DELETE {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/M001/P003
+
+### Get postazioni by linea produzione
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/by-linea/M001
+Accept: application/jsonARTMOB_PANTAREI_BACK_HostAddress = http://localhost:5133
+
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
