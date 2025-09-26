@@ -1,6 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using SMARTMOB_PANTAREI_BACK.Data;
+using SMARTMOB_PANTAREI_BACK.Hubs;
 using SMARTMOB_PANTAREI_BACK.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,15 +23,34 @@ builder.Services.AddScoped<IAcquisizioniRealtimeService, AcquisizioniRealtimeSer
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<AcquisizioniRealtimeService>();
 
-// Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+    
+    // More restrictive policy for production (optional)
+    options.AddPolicy("AllowSpecific", policy =>
+    {
+        policy.SetIsOriginAllowed(origin => 
+            {
+                // Allow any localhost origin for development
+                if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                {
+                    return uri.Host == "localhost" || 
+                           uri.Host == "127.0.0.1" ||
+                           uri.Host.StartsWith("192.168.") ||
+                           uri.Host.StartsWith("10.") ||
+                           uri.Host.StartsWith("172.");
+                }
+                return false;
+            })
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // Important for SignalR
     });
 });
 
@@ -68,9 +88,28 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Configure static files for images
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Public")),
+    RequestPath = "/images"
+});
 
-// Use CORS
-app.UseCors("AllowAll");
+// Also expose the same Public folder under /api/images/public so frontend requests
+// like GET /api/images/public/theimageName.jpg will resolve directly to files in Public/
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Public")),
+    RequestPath = "/api/images/public",
+    ServeUnknownFileTypes = true // allow serving files by extension; content-type provider will still apply for known types
+});
+
+// Use CORS - prefer the credentials-enabled policy for SignalR (frontend apps)
+// SignalR requires AllowCredentials() when the client sends cookies or uses credentialed requests.
+// Note: AllowAnyOrigin() cannot be combined with AllowCredentials(), so we use the more restrictive policy.
+app.UseCors("AllowSpecific");
 
 // Add authentication and authorization middleware (if needed)
 app.UseAuthentication();
@@ -78,5 +117,7 @@ app.UseAuthorization();
 
 // Map controllers
 app.MapControllers();
+// Map SignalR Hub
+app.MapHub<AcquisizioniHub>("/hubs/acquisizioni");
 
 app.Run();
