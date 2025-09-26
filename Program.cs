@@ -15,6 +15,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IAcquisizioniService, AcquisizioniService>();
 builder.Services.AddScoped<IPostazioniService, PostazioniService>();
 builder.Services.AddScoped<IPostazioniPerLineaService, PostazioniPerLineaService>();
+builder.Services.AddScoped<IAcquisizioniRealtimeService, AcquisizioniRealtimeService>();
+
+
+// Add SignalR before registering hosted service
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<AcquisizioniRealtimeService>();
 
 // Add CORS
 builder.Services.AddCors(options =>

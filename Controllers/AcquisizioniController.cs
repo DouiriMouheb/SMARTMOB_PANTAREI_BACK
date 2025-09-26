@@ -9,11 +9,16 @@ namespace SMARTMOB_PANTAREI_BACK.Controllers
     public class AcquisizioniController : ControllerBase
     {
         private readonly IAcquisizioniService _acquisizioniService;
+        private readonly IAcquisizioniRealtimeService _realtimeService;
         private readonly ILogger<AcquisizioniController> _logger;
 
-        public AcquisizioniController(IAcquisizioniService acquisizioniService, ILogger<AcquisizioniController> logger)
+        public AcquisizioniController(
+            IAcquisizioniService acquisizioniService,
+            IAcquisizioniRealtimeService realtimeService,
+            ILogger<AcquisizioniController> logger)
         {
             _acquisizioniService = acquisizioniService;
+            _realtimeService = realtimeService;
             _logger = logger;
         }
 
@@ -81,6 +86,50 @@ namespace SMARTMOB_PANTAREI_BACK.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving acquisizioni for linea {CodLineaProd} and postazione {CodPostazione}", codLineaProd, codPostazione);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Get the latest single acquisizione for a specific linea and postazione (real-time)
+        /// </summary>
+        /// <param name="codLinea">Production line code</param>
+        /// <param name="codPostazione">Station code</param>
+        /// <returns>Latest single acquisizione for the specified linea and postazione</returns>
+        [HttpGet("latest-single/linea/{codLinea}/postazione/{codPostazione}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AcquisizioniDto>> GetLatestSingleByLineaAndPostazione(string codLinea, string codPostazione)
+        {
+            try
+            {
+                var acquisizione = await _realtimeService.GetLatestSingleByLineAndStationAsync(codLinea, codPostazione);
+                if (acquisizione == null)
+                {
+                    return NotFound($"No records found for linea {codLinea} and postazione {codPostazione}");
+                }
+                // Map to DTO if needed
+                var dto = new AcquisizioniDto
+                {
+                    Id = acquisizione.Id,
+                    CodLinea = acquisizione.CodLinea,
+                    CodPostazione = acquisizione.CodPostazione,
+                    FotoAcquisizione = acquisizione.FotoAcquisizione,
+                    CodiceArticolo = acquisizione.CodiceArticolo,
+                    IdCatasta = acquisizione.IdCatasta,
+                    AbilitaCq = acquisizione.AbilitaCq,
+                    EsitoCqArticolo = acquisizione.EsitoCqArticolo,
+                    NumSpineContate = acquisizione.NumSpineContate,
+                    NumSpineAttese = acquisizione.NumSpineAttese,
+                    DataInserimento = acquisizione.DataInserimento,
+                    DataAggiornamento = acquisizione.DataAggiornamento,
+                    Descrizione = acquisizione.Descrizione
+                };
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving latest single acquisizione for linea {CodLinea} and postazione {CodPostazione}", codLinea, codPostazione);
                 return StatusCode(500, "Internal server error");
             }
         }
