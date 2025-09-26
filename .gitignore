@@ -398,6 +398,10 @@ FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
 .vscode/*
+
+# Ignore Public folder (static assets, images, test pages). If you need a placeholder file keep a
+# `.gitkeep` and add an exception for it (not added here).
+Public/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
