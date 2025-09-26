@@ -9,6 +9,7 @@ namespace SMARTMOB_PANTAREI_BACK.Services
     {
         Task<IEnumerable<AcquisizioniDto>> GetAllAsync();
         Task<AcquisizioniDto?> GetByIdAsync(int id);
+        Task<IEnumerable<AcquisizioniDto>> GetByLineaAndPostazioneAsync(string codLinea, string codPostazione);
     }
 
     public class AcquisizioniService : IAcquisizioniService
@@ -30,6 +31,14 @@ namespace SMARTMOB_PANTAREI_BACK.Services
         {
             var acquisizione = await _context.Acquisizioni.FindAsync(id);
             return acquisizione != null ? MapToDto(acquisizione) : null;
+        }
+
+        public async Task<IEnumerable<AcquisizioniDto>> GetByLineaAndPostazioneAsync(string codLinea, string codPostazione)
+        {
+            var acquisizioni = await _context.Acquisizioni
+                .Where(a => a.CodLinea == codLinea && a.CodPostazione == codPostazione)
+                .ToListAsync();
+            return acquisizioni.Select(MapToDto);
         }
 
         private static AcquisizioniDto MapToDto(Acquisizioni acquisizione)

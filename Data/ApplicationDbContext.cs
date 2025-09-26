@@ -11,6 +11,7 @@ namespace SMARTMOB_PANTAREI_BACK.Data
 
         public DbSet<Acquisizioni> Acquisizioni { get; set; }
         public DbSet<Postazioni> Postazioni { get; set; }
+        public DbSet<PostazioniPerLinea> PostazioniPerLinea { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,6 +99,22 @@ namespace SMARTMOB_PANTAREI_BACK.Data
                 entity.Property(e => e.DataInserimento)
                     .HasColumnName("DT_INS")
                     .HasColumnType("datetime");
+            });
+
+            // Configure PostazioniPerLinea view
+            modelBuilder.Entity<PostazioniPerLinea>(entity =>
+            {
+                entity.ToTable("vw_PostazioniPerLinea");
+                entity.HasKey(e => e.CodLinea);
+                
+                entity.Property(e => e.CodLinea)
+                    .HasColumnName("COD_LINEA")
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.Property(e => e.CodPostazioneList)
+                    .HasColumnName("COD_POSTAZIONE_LIST")
+                    .HasMaxLength(4000); // Allow for concatenated values
             });
         }
     }

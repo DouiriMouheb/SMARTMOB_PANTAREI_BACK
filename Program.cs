@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register services
 builder.Services.AddScoped<IAcquisizioniService, AcquisizioniService>();
 builder.Services.AddScoped<IPostazioniService, PostazioniService>();
+builder.Services.AddScoped<IPostazioniPerLineaService, PostazioniPerLineaService>();
 
 // Add CORS
 builder.Services.AddCors(options =>

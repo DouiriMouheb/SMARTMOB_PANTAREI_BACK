@@ -13,6 +13,10 @@ Accept: application/json
 GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/acquisizioni/1
 Accept: application/json
 
+### Get acquisizioni by linea and postazione
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/acquisizioni/MFR007/P001
+Accept: application/json
+
 ### ========== POSTAZIONI ENDPOINTS ==========
 
 ### Get all postazioni
@@ -46,9 +50,16 @@ DELETE {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/M001/P003
 
 ### Get postazioni by linea produzione
 GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/postazioni/by-linea/M001
-Accept: application/jsonARTMOB_PANTAREI_BACK_HostAddress = http://localhost:5133
+Accept: application/json
 
-GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/weatherforecast/
+### PostazioniPerLinea API Tests
+
+### Get all postazioni per linea (from view)
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/PostazioniPerLinea
+Accept: application/json
+
+### Get postazioni for specific linea
+GET {{SMARTMOB_PANTAREI_BACK_HostAddress}}/api/PostazioniPerLinea/MFR007
 Accept: application/json
 
 ###

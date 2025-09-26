@@ -62,5 +62,27 @@ namespace SMARTMOB_PANTAREI_BACK.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        /// <summary>
+        /// Get acquisizioni by linea produzione and postazione
+        /// </summary>
+        /// <param name="codLineaProd">Production line code</param>
+        /// <param name="codPostazione">Station code</param>
+        /// <returns>List of acquisizioni for the specified linea and postazione</returns>
+        [HttpGet("{codLineaProd}/{codPostazione}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<AcquisizioniDto>>> GetByLineaAndPostazione(string codLineaProd, string codPostazione)
+        {
+            try
+            {
+                var acquisizioni = await _acquisizioniService.GetByLineaAndPostazioneAsync(codLineaProd, codPostazione);
+                return Ok(acquisizioni);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving acquisizioni for linea {CodLineaProd} and postazione {CodPostazione}", codLineaProd, codPostazione);
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }
