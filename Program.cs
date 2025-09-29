@@ -88,23 +88,41 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-// Configure static files for images
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Public")),
-    RequestPath = "/images"
-});
 
-// Also expose the same Public folder under /api/images/public so frontend requests
-// like GET /api/images/public/theimageName.jpg will resolve directly to files in Public/
-app.UseStaticFiles(new StaticFileOptions
+// Configure static files for images. Ensure the Public folder exists in the content root
+// before creating a PhysicalFileProvider (prevents errors when running from a trimmed/published image).
+var publicPath = Path.Combine(builder.Environment.ContentRootPath, "Public");
+try
 {
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Public")),
-    RequestPath = "/api/images/public",
-    ServeUnknownFileTypes = true // allow serving files by extension; content-type provider will still apply for known types
-});
+    if (!Directory.Exists(publicPath))
+    {
+        // Create directory so PhysicalFileProvider doesn't fail when container runs without the folder present
+        Directory.CreateDirectory(publicPath);
+    }
+
+    var publicFileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(publicPath);
+
+    // Serve under /images
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = publicFileProvider,
+        RequestPath = "/images"
+    });
+
+    // Also serve under /api/images/public
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = publicFileProvider,
+        RequestPath = "/api/images/public",
+        ServeUnknownFileTypes = true // allow serving files by extension; content-type provider will still apply for known types
+    });
+}
+catch (Exception ex)
+{
+    // Log and continue startup; static files will not be available if this fails
+    var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+    logger.LogError(ex, "Failed to configure static file provider for Public/ folder ({Path}).", publicPath);
+}
 
 // Use CORS - prefer the credentials-enabled policy for SignalR (frontend apps)
 // SignalR requires AllowCredentials() when the client sends cookies or uses credentialed requests.

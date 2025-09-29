@@ -22,5 +22,10 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
   </ItemGroup>
+  
+  <!-- Ensure static Public files are copied to the publish output so they are available in containers -->
+  <ItemGroup>
+    <Content Include="Public\**\*" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
 </Project>

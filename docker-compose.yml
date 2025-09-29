@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: smartmob-api
+    container_name: Smartmob-Pantarei-pi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
