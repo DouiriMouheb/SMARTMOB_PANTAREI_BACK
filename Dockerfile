@@ -26,5 +26,5 @@ EXPOSE 8181
 ENV ASPNETCORE_URLS=http://+:8181
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Start the application
-ENTRYPOINT ["dotnet", "api.dll"]
+# Start the application (use the real assembly name produced by the build)
+ENTRYPOINT ["dotnet", "SMARTMOB_PANTAREI_BACK.dll"]

@@ -1,0 +1,18 @@
+# Ignore the build output folders and other unnecessary files from docker context
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+.git/
+.gitignore
+.DS_Store
+*.md
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Optionally ignore the Public folder if you don't want local static assets copied into the image
+# Uncomment the next line to exclude Public/ from the build context
+# Public/
