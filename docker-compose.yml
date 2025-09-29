@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  # .NET API Application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartmob-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5001:8181"
+    restart: unless-stopped
