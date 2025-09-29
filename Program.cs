@@ -116,6 +116,14 @@ try
         RequestPath = "/api/images/public",
         ServeUnknownFileTypes = true // allow serving files by extension; content-type provider will still apply for known types
     });
+
+    // Also serve under /api/public to support the public controller path and direct file requests
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = publicFileProvider,
+        RequestPath = "/api/public",
+        ServeUnknownFileTypes = true
+    });
 }
 catch (Exception ex)
 {
