@@ -49,10 +49,12 @@ namespace SMARTMOB_PANTAREI_BACK.Data
 
                 entity.Property(e => e.AbilitaCq)
                     .HasColumnName("ABILITA_CQ")
+                    .HasColumnType("bit")
                     .IsRequired();
 
                 entity.Property(e => e.EsitoCqArticolo)
-                    .HasColumnName("ESITO_CQ_ARTICOLO");
+                    .HasColumnName("ESITO_CQ_ARTICOLO")
+                    .HasColumnType("int");
 
                 entity.Property(e => e.NumSpineContate)
                     .HasColumnName("NUM_SPINE_CONTATE");

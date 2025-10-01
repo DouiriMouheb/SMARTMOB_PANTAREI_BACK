@@ -33,8 +33,8 @@ namespace SMARTMOB_PANTAREI_BACK.Models
         [Column("ABILITA_CQ")]
         public bool AbilitaCq { get; set; }
 
-        [Column("ESITO_CQ_ARTICOLO")]
-        public bool? EsitoCqArticolo { get; set; }
+    [Column("ESITO_CQ_ARTICOLO")]
+    public int? EsitoCqArticolo { get; set; }
 
         [Column("NUM_SPINE_CONTATE")]
         public int? NumSpineContate { get; set; }

@@ -43,6 +43,12 @@ namespace SMARTMOB_PANTAREI_BACK.Services
 
         private static AcquisizioniDto MapToDto(Acquisizioni acquisizione)
         {
+            bool? EsitoToBool(int? val)
+            {
+                if (!val.HasValue) return null;
+                return val.Value != 0;
+            }
+
             return new AcquisizioniDto
             {
                 Id = acquisizione.Id,
@@ -52,7 +58,7 @@ namespace SMARTMOB_PANTAREI_BACK.Services
                 CodiceArticolo = acquisizione.CodiceArticolo,
                 IdCatasta = acquisizione.IdCatasta,
                 AbilitaCq = acquisizione.AbilitaCq,
-                EsitoCqArticolo = acquisizione.EsitoCqArticolo,
+                EsitoCqArticolo = EsitoToBool(acquisizione.EsitoCqArticolo),
                 NumSpineContate = acquisizione.NumSpineContate,
                 NumSpineAttese = acquisizione.NumSpineAttese,
                 DataInserimento = acquisizione.DataInserimento,

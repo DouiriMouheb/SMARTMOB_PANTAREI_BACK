@@ -12,3 +12,7 @@ services:
     ports:
       - "5001:8181"
     restart: unless-stopped
+    volumes:
+      # Mount the Windows host Public folder into the container so files you add locally are available at runtime
+      # Use forward-slashes for Docker Desktop on Windows. If you run via WSL, adapt the host path accordingly.
+      - 'D:/SmartMobPantarei/SMARTMOB_PANTAREI_BACK/Public:/app/Public:rw'

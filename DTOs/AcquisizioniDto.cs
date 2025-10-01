@@ -9,7 +9,7 @@ namespace SMARTMOB_PANTAREI_BACK.DTOs
         public string? CodiceArticolo { get; set; }
         public string? IdCatasta { get; set; }
         public bool AbilitaCq { get; set; }
-        public bool? EsitoCqArticolo { get; set; }
+    public bool? EsitoCqArticolo { get; set; }
         public int? NumSpineContate { get; set; }
         public int? NumSpineAttese { get; set; }
         public DateTime? DataInserimento { get; set; }

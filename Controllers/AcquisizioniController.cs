@@ -109,6 +109,12 @@ namespace SMARTMOB_PANTAREI_BACK.Controllers
                     return NotFound($"No records found for linea {codLinea} and postazione {codPostazione}");
                 }
                 // Map to DTO if needed
+                bool? EsitoToBool(int? val)
+                {
+                    if (!val.HasValue) return null;
+                    return val.Value != 0;
+                }
+
                 var dto = new AcquisizioniDto
                 {
                     Id = acquisizione.Id,
@@ -118,7 +124,7 @@ namespace SMARTMOB_PANTAREI_BACK.Controllers
                     CodiceArticolo = acquisizione.CodiceArticolo,
                     IdCatasta = acquisizione.IdCatasta,
                     AbilitaCq = acquisizione.AbilitaCq,
-                    EsitoCqArticolo = acquisizione.EsitoCqArticolo,
+                    EsitoCqArticolo = EsitoToBool(acquisizione.EsitoCqArticolo),
                     NumSpineContate = acquisizione.NumSpineContate,
                     NumSpineAttese = acquisizione.NumSpineAttese,
                     DataInserimento = acquisizione.DataInserimento,
