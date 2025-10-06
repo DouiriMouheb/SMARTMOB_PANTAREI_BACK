@@ -8,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Add HttpClientFactory for making HTTP requests
+builder.Services.AddHttpClient();
+
 // Configure Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -89,6 +92,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Use CORS - MUST come before static files middleware
+// SignalR requires AllowCredentials() when the client sends cookies or uses credentialed requests.
+// Note: AllowAnyOrigin() cannot be combined with AllowCredentials(), so we use the more restrictive policy.
+app.UseCors("AllowSpecific");
+
 // Configure static files for images. Ensure the Public folder exists in the content root
 // before creating a PhysicalFileProvider (prevents errors when running from a trimmed/published image).
 var publicPath = Path.Combine(builder.Environment.ContentRootPath, "Public");
@@ -131,11 +139,6 @@ catch (Exception ex)
     var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
     logger.LogError(ex, "Failed to configure static file provider for Public/ folder ({Path}).", publicPath);
 }
-
-// Use CORS - prefer the credentials-enabled policy for SignalR (frontend apps)
-// SignalR requires AllowCredentials() when the client sends cookies or uses credentialed requests.
-// Note: AllowAnyOrigin() cannot be combined with AllowCredentials(), so we use the more restrictive policy.
-app.UseCors("AllowSpecific");
 
 // Add authentication and authorization middleware (if needed)
 app.UseAuthentication();
